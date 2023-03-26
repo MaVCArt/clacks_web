@@ -1,3 +1,5 @@
+```pip install git+https://github.com/MaVCArt/clacks_web.git@main```
+
 # clacks_web
 
 `clacks_web` is a basic extension library for `clacks`, providing common web-based interfaces for things like websites
