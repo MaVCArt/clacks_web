@@ -43,17 +43,17 @@ class TestHTTPHandler(unittest.TestCase):
     def test_register_handler(self):
         server = self.create_server()
 
-        assert len(server.sockets) is 0
+        assert len(server.sockets) == 0
 
         handler = self.create_handler()
         server.register_handler(host='localhost', port=clacks.get_new_port('localhost'), handler=handler)
 
-        assert len(server.sockets) is 1
+        assert len(server.sockets) == 1
 
         # -- start the server, this should create a handler thread.
         server.start()
 
-        assert len(server.handler_threads) is 1
+        assert len(server.handler_threads) == 1
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_connect_client(self):
