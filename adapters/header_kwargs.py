@@ -18,8 +18,7 @@ class HeaderKwargAdapter(ServerAdapterBase):
     """
 
     # ------------------------------------------------------------------------------------------------------------------
-    def marshaller_pre_encode_package(self, transaction_id, package):
-        # type: (str, Package) -> None
+    def marshaller_pre_encode_package(self, server, handler, marshaller, transaction_id, package):
         if 'args' in package.payload:
             if package.payload['args']:
                 raise ValueError(

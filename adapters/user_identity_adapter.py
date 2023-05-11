@@ -1,6 +1,4 @@
 import os
-import socket
-from clacks.core.package import Package
 from clacks import ServerAdapterBase, register_adapter_type
 
 
@@ -8,8 +6,7 @@ from clacks import ServerAdapterBase, register_adapter_type
 class UserIdentityHeaderAdapter(ServerAdapterBase):
 
     # ------------------------------------------------------------------------------------------------------------------
-    def handler_pre_respond(self, connection, transaction_id, package):
-        # type: (socket.socket, str, Package) -> None
+    def handler_pre_respond(self, server, handler, connection, transaction_id, package):
         if 'header_data' not in package.payload:
             package.payload['header_data'] = dict()
 

@@ -54,10 +54,10 @@ class TestWebCommandDecorators(unittest.TestCase):
             json={'foo': 'This should be changed!'}
         ).json()['response']
 
+        server.end()
+
         if result is not True:
             self.fail('Arg processor did not fire!')
-
-        server.end()
 
     # ------------------------------------------------------------------------------------------------------------------
     def test_result_proc(self):
@@ -69,7 +69,7 @@ class TestWebCommandDecorators(unittest.TestCase):
             json={'foo': 'This should be changed!'}
         ).json()['response']
 
+        server.end()
+
         if result != 'foobar':
             self.fail('Result processor did not fire!')
-
-        server.end()

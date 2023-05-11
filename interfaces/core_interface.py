@@ -65,8 +65,12 @@ class ClacksCoreWebAPIInterface(clacks.ServerInterface):
             self.register_resource(resource_type, path, resource)
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _initialize(self):
-        # type: () -> bool
+    def _initialize(self, parent):
+        success = super(ClacksCoreWebAPIInterface, self)._initialize(parent)
+
+        if not success:
+            return False
+
         for _, interface in self.server.interfaces.items():
             self.get_resources_from_object(interface)
 
@@ -115,12 +119,12 @@ class ClacksCoreWebAPIInterface(clacks.ServerInterface):
         :rtype: object(callable)
         """
         if resource_type not in self.resources:
-            msg = 'Resource type %s is not recognized!' % resource_type
+            msg = f'Resource type {resource_type} is not recognized!'
             self.logger.error(msg)
             raise KeyError(msg)
 
         if path not in self.resources[resource_type]:
-            msg = 'Resource %s of type %s could not be found!' % (path, resource_type)
+            msg = f'Resource {path} of type {resource_type} could not be found!'
             self.logger.error(msg)
             raise NotImplementedError(msg)
 

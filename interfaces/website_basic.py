@@ -16,9 +16,14 @@ class ClacksBasicWebsiteInterface(clacks.ServerInterface):
         self.environment = None
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _initialize(self):  # type: () -> bool
+    def _initialize(self, parent):  # type: () -> bool
+        success = super(ClacksBasicWebsiteInterface, self)._initialize(parent)
+        if not success:
+            return False
+
         self.register_token('server', self.server)
         self.register_token('str', str)
+
         return True
 
     # ------------------------------------------------------------------------------------------------------------------

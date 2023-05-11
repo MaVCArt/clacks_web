@@ -11,7 +11,7 @@ class TestFirefoxHandlerAdapter(unittest.TestCase):
         adapter = clacks_web.FirefoxHeaderAdapter()
         package = clacks.package.Package(payload=dict())
 
-        adapter.handler_pre_respond(None, 'unittest', package)
+        adapter.handler_pre_respond(None, None, None, 'unittest', package)
 
         if not package.header_data:
             self.fail('header data was not injected!')

@@ -7,8 +7,7 @@ from clacks import ServerAdapterBase, register_adapter_type
 class ContentTypeHeaderAdapter(ServerAdapterBase):
 
     # ------------------------------------------------------------------------------------------------------------------
-    def server_post_digest(self, handler, connection, transaction_id, header_data, data, response):
-        # type: (BaseRequestHandler, socket.socket, str, dict, dict, Response) -> None
+    def server_post_digest(self, server, handler, connection, transaction_id, header_data, data, response):
         content_type = 'text/json'
 
         if 'Content-Type' in header_data:
@@ -24,8 +23,7 @@ class ContentTypeHeaderAdapter(ServerAdapterBase):
         response.header_data['Content-Type'] = content_type
 
     # ------------------------------------------------------------------------------------------------------------------
-    def handler_pre_respond(self, connection, transaction_id, package):
-        # type: (socket.socket, str, Package) -> None
+    def handler_pre_respond(self, server, handler, connection, transaction_id, package):
         if 'header_data' not in package.payload:
             package.payload['header_data'] = dict()
 
