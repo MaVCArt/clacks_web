@@ -36,8 +36,7 @@ class HeaderKwargAdapter(ServerAdapterBase):
         del package.payload['kwargs']
 
     # ------------------------------------------------------------------------------------------------------------------
-    def server_pre_digest(self, handler, connection, transaction_id, header_data, data):
-        # type: (BaseRequestHandler, socket.socket, str, dict, dict) -> None
+    def server_pre_digest(self, server, handler, connection, transaction_id, header_data, data):
         # -- in this instance, assuming data comes from the header, all data in the body is considered a keyword arg.
         data.update(kwargs=data.copy())
 
