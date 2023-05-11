@@ -1,5 +1,5 @@
 import clacks
-from clacks_web import get
+from .rest_decorators import get
 
 
 # ----------------------------------------------------------------------------------------------------------------------
