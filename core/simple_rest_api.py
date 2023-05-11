@@ -1,8 +1,8 @@
 import clacks
 
-from . import HTTPHandler
-from . import HeaderKwargAdapter
-from . import CORSHeaderAdapter
+from clacks_web import HTTPHandler
+from clacks_web import HeaderKwargAdapter
+from clacks_web import CORSHeaderAdapter
 
 
 # ----------------------------------------------------------------------------------------------------------------------
