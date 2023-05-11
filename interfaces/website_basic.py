@@ -6,7 +6,7 @@ import functools
 # ----------------------------------------------------------------------------------------------------------------------
 class ClacksBasicWebsiteInterface(clacks.ServerInterface):
 
-    REQUIRED_INTERFACES = ['website_utils']
+    _REQUIRED_INTERFACES = ['website_utils']
 
     # ------------------------------------------------------------------------------------------------------------------
     def __init__(self):

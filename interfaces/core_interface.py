@@ -1,6 +1,6 @@
 import clacks
 import inspect
-from clacks import ServerCommand
+from clacks import command
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -57,7 +57,8 @@ class ClacksCoreWebAPIInterface(clacks.ServerInterface):
                 path = v.path
 
             # -- construct a ServerCommand instance, this will retain all decorators.
-            resource = ServerCommand.construct(self, v)
+            resource = command.command_from_callable(self, v, cls=clacks.ServerCommand)
+
             if not resource:
                 continue
 

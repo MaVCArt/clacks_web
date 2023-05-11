@@ -5,7 +5,7 @@ from clacks_web import get
 # ----------------------------------------------------------------------------------------------------------------------
 class ClacksBasicRestAPIInterface(clacks.ServerInterface):
 
-    REQUIRED_INTERFACES = ['web_core']
+    _REQUIRED_INTERFACES = ['web_core']
 
     # ------------------------------------------------------------------------------------------------------------------
     @get('/', expose_as_method=False)
