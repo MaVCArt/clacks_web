@@ -19,6 +19,7 @@ class TestSimpleRestAPI(unittest.TestCase):
 
         a = response.json()['response']
 
+
         b = dict()
         for method in api.resources:
             b[method] = sorted(list(set(api.resources[method].keys())))

@@ -14,6 +14,10 @@ class ClacksCoreWebAPIInterface(clacks.ServerInterface):
     for that purpose. `clacks_web.decorators` includes these decorators: post, get, put, patch, delete, etc...
     """
 
+    # -- this interface requires the "status_code" adapter to function, as it transmutes our results from a tuple
+    # -- into a value and a code.
+    _REQUIRED_ADAPTERS = ['status_code', 'header_data_as_kwarg']
+
     # ------------------------------------------------------------------------------------------------------------------
     def __init__(self):
         super(ClacksCoreWebAPIInterface, self).__init__()
@@ -94,8 +98,6 @@ class ClacksCoreWebAPIInterface(clacks.ServerInterface):
         :param func: callable function to register at the given resource.
         :type func: callable
 
-        :return: None
-        :rtype: None
         """
         if resource_type not in self.resources:
             self.resources[resource_type] = dict()
@@ -103,8 +105,6 @@ class ClacksCoreWebAPIInterface(clacks.ServerInterface):
         self.resources[resource_type][path] = func
 
     # ------------------------------------------------------------------------------------------------------------------
-    @clacks.decorators.takes(dict(resource_type=str, path=str))
-    @clacks.decorators.returns(object)
     def get_resource(self, resource_type, path):
         """
         Get a registered resource by its type and path.
@@ -121,96 +121,87 @@ class ClacksCoreWebAPIInterface(clacks.ServerInterface):
         if resource_type not in self.resources:
             msg = f'Resource type {resource_type} is not recognized!'
             self.logger.error(msg)
-            raise KeyError(msg)
+            raise clacks.errors.ClacksCommandNotFoundError(msg)
 
         if path not in self.resources[resource_type]:
             msg = f'Resource {path} of type {resource_type} could not be found!'
             self.logger.error(msg)
-            raise NotImplementedError(msg)
+            raise clacks.errors.ClacksCommandNotFoundError(msg)
 
         return self.resources[resource_type][path]
 
     # ------------------------------------------------------------------------------------------------------------------
     def _method(self, method, *args, **kwargs):
-        if 'path' not in kwargs:
-            raise KeyError('No path provided!')
-
         path = kwargs.get('path')
-        del kwargs['path']
 
-        try:
-            resource = self.get_resource(method, path)
+        if '_header_data' in kwargs:
+            path = kwargs['_header_data'].get('path')
+            del kwargs['_header_data']
 
-        except KeyError:
-            return None, clacks.ReturnCodes.SERVER_ERROR
+        if not path:
+            raise clacks.errors.ClacksBadCommandArgsError('No "path" argument provided in kwargs!')
 
-        except NotImplementedError:
-            return None, clacks.ReturnCodes.NOT_FOUND
+        resource = self.get_resource(method, path)
 
         return resource(*args, **kwargs), clacks.ReturnCodes.OK
 
     # ------------------------------------------------------------------------------------------------------------------
-    @clacks.decorators.returns(None)
-    @clacks.decorators.returns_status_code
+    @clacks.returns_status_code
+    @clacks.takes_header_data
     def POST(self, *args, **kwargs):
         """
         Catch-all POST method, receives POST requests and forwards them to the _method private method. Will return the
         result of whatever method is retrieved by the given resource path.
 
         :return: Whatever the result of the call is
-        :rtype: object
         """
         return self._method('POST', *args, **kwargs)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @clacks.decorators.returns(None)
-    @clacks.decorators.returns_status_code
+    @clacks.returns_status_code
+    @clacks.takes_header_data
     def GET(self, *args, **kwargs):
         """
         Catch-all GET method, receives GET requests and forwards them to the _method private method. Will return the
         result of whatever method is retrieved by the given resource path.
 
         :return: Whatever the result of the call is
-        :rtype: object
         """
         return self._method('GET', *args, **kwargs)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @clacks.decorators.returns(None)
-    @clacks.decorators.returns_status_code
+    @clacks.returns_status_code
+    @clacks.takes_header_data
     def PUT(self, *args, **kwargs):
         """
         Catch-all PUT method, receives PUT requests and forwards them to the _method private method. Will return the
         result of whatever method is retrieved by the given resource path.
 
         :return: Whatever the result of the call is
-        :rtype: object
         """
         return self._method('PUT', *args, **kwargs)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @clacks.decorators.returns(None)
-    @clacks.decorators.returns_status_code
+    @clacks.returns_status_code
+    @clacks.takes_header_data
     def PATCH(self, *args, **kwargs):
         """
         Catch-all PATCH method, receives PATCH requests and forwards them to the _method private method. Will return the
         result of whatever method is retrieved by the given resource path.
 
         :return: Whatever the result of the call is
-        :rtype: object
         """
         return self._method('PATCH', *args, **kwargs)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @clacks.decorators.returns(None)
-    @clacks.decorators.returns_status_code
+    @clacks.returns_status_code
+    @clacks.takes_header_data
     def DELETE(self, *args, **kwargs):
         """
-        Catch-all DELETE method, receives DELETE requests and forwards them to the _method private method. Will return the
-        result of whatever method is retrieved by the given resource path.
+        Catch-all DELETE method, receives DELETE requests and forwards them to the _method private method.
+        Will return the result of whatever method is retrieved by the given resource path.
 
         :return: Whatever the result of the call is
-        :rtype: object
         """
         return self._method('DELETE', *args, **kwargs)
 

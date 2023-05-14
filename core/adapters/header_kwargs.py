@@ -54,8 +54,5 @@ class HeaderKwargAdapter(ServerAdapterBase):
             data['command'] = header_data.get('command')
             del header_data['command']
 
-        if 'path' in header_data:
-            data['kwargs']['path'] = header_data.get('path')
-
 
 register_adapter_type('header_kwargs', HeaderKwargAdapter)

@@ -18,11 +18,12 @@ class TestHTTPHandler(unittest.TestCase):
     def create_server(cls):
         server = clacks.ServerBase(identifier='UNITTEST SERVER', start_queue=False)
         server.register_interface_by_key('standard')
+        interface = server.interfaces.get('standard')
 
         def _list_commands(*args, **kwargs):
             return list(server.commands.keys())
 
-        server.register_command('LIST_COMMANDS', _list_commands)
+        server.register_command('LIST_COMMANDS', clacks.command_from_callable(interface, _list_commands))
         server.register_adapter('header_kwargs', clacks_web.HeaderKwargAdapter())
         return server
 

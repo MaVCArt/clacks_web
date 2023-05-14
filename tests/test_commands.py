@@ -5,14 +5,10 @@ import clacks_web
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-def arg_proc(server_command, *args, **kwargs):
-    kwargs['foo'] = 'bar'
-    return args, kwargs
-
-
-# ----------------------------------------------------------------------------------------------------------------------
-def result_proc(server_command, result):
-    return 'foobar'
+def test_decorator(fn):
+    def wrapper(*args, **kwargs):
+        return 'foobar'
+    return wrapper
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -20,15 +16,9 @@ class DecoratorTestInterface(clacks.ServerInterface):
 
     # ------------------------------------------------------------------------------------------------------------------
     @clacks_web.post('/test_result')
-    @clacks.decorators.process_result([result_proc])
+    @test_decorator
     def test_result(self, *args, **kwargs):
         return 'hello world - this should not be the result!'
-
-    # ------------------------------------------------------------------------------------------------------------------
-    @clacks_web.post('/test_args')
-    @clacks.decorators.process_arguments([arg_proc])
-    def test_args(self, *args, **kwargs):
-        return kwargs.get('foo') == 'bar'
 
 
 clacks.register_server_interface_type('decorator_test', DecoratorTestInterface)
@@ -45,21 +35,6 @@ class TestWebCommandDecorators(unittest.TestCase):
         return api
 
     # ------------------------------------------------------------------------------------------------------------------
-    def test_arg_proc(self):
-        server = self.create_server()
-        server.start(blocking=False)
-
-        result = requests.post(
-            'http://localhost:6000/test_args',
-            json={'foo': 'This should be changed!'}
-        ).json()['response']
-
-        server.end()
-
-        if result is not True:
-            self.fail('Arg processor did not fire!')
-
-    # ------------------------------------------------------------------------------------------------------------------
     def test_result_proc(self):
         server = self.create_server()
         server.start(blocking=False)
@@ -67,7 +42,11 @@ class TestWebCommandDecorators(unittest.TestCase):
         result = requests.post(
             'http://localhost:6000/test_result',
             json={'foo': 'This should be changed!'}
-        ).json()['response']
+        )
+
+        result.raise_for_status()
+
+        result = result.json()['response']
 
         server.end()
 
