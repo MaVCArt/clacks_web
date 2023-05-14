@@ -1,7 +1,7 @@
 import clacks
 
-from .http_handler import HTTPHandler
-from .html_marshaller import HTMLMarshaller
+from clacks_web.core.http_handler import HTTPHandler
+from clacks_web.core.html_marshaller import HTMLMarshaller
 
 
 spec = {

@@ -57,7 +57,6 @@ class HTTPHandler(BaseRequestHandler):
                 kwargs[key] = value
 
         result['kwargs'] = kwargs
-
         result['Accept-Encoding'] = result.get('Accept-Encoding', 'text/json')
 
         return result
@@ -100,7 +99,15 @@ class HTTPHandler(BaseRequestHandler):
     def encode_response_header(self, transaction_id, payload, expected_content_length):
         # type: (str, Response, int) -> bytes
         # -- if this outgoing, it will not
-        data = 'HTTP/1.1 %s %s\n' % (payload.code, 'OK' if str(payload.code) == '200' else '\n'.join(payload.errors))
+        error = ''
+
+        if payload.traceback:
+            error = payload.traceback.splitlines()[-2]
+
+        if payload.errors:
+            error = payload.errors[-1]
+
+        data = 'HTTP/1.1 %s %s\n' % (payload.code, 'OK' if not error else error)
         data += self.dict_to_header(self.get_outgoing_header_data(transaction_id, payload, expected_content_length))
         return bytes(data, self.FORMAT)
 
